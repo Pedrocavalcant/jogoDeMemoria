@@ -11,14 +11,14 @@ export default function Card({ card, isFlipped, onPress, backImage }) {
 
 const styles = StyleSheet.create({
   card: {
-    width: '25%',
-    height: '40%',
-    aspectRatio: 1,
-    margin: '5%',
+    width: 240,
+    height: 360,
+    margin: '2%',
     borderRadius: 8,
     overflow: 'hidden',
-    borderWidth: 2,
+    borderWidth: 4,
     borderColor: '#2e7d32',
+    
   },
   image: {
     width: '100%',

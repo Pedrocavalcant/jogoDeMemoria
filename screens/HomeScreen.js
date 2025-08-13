@@ -9,6 +9,10 @@ import {
 } from 'react-native';
 import Navbar from '../components/NavBar';
 import { useNavigation } from '@react-navigation/native';
+import { useContext } from 'react';
+import { ThemeContext } from '../context/ThemeContext';
+import { AccessibilityPanel} from '../components/AccessibilityPanel';
+
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -87,6 +91,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   content: {
     padding: 20,
+    paddingLeft: 100,
     backgroundColor: '#e8f5e9',
   },
   heading: {
@@ -99,14 +104,14 @@ const styles = StyleSheet.create({
   biomaCard: {
     flexDirection: 'row',
     backgroundColor: 'white',
-    borderRadius: 14,
-    padding: 16,
-    marginBottom: 20,
+    borderRadius: 20,
+    padding: 15,
+    marginBottom: 5,
     alignItems: 'center',
-    borderWidth: 3,
+    borderWidth: 10,
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowRadius: 6,
+    shadowRadius: 12,
     shadowOffset: { width: 0, height: 3 },
     elevation: 5,
   },
@@ -131,7 +136,7 @@ const styles = StyleSheet.create({
   },
   section: {
     backgroundColor: 'white',
-    borderRadius: 14,
+    borderRadius: 20,
     padding: 20,
     marginTop: 30,
     shadowColor: '#000',
@@ -143,7 +148,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '700',
-    marginBottom: 12,
+    marginBottom: 20,
     color: '#2e7d32',
   },
   sectionText: {

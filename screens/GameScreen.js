@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Alert, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Alert, Dimensions, TouchableOpacity, ScrollView } from 'react-native';
 import NavBar from '../components/NavBar';
 import Card from '../components/Card';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
-const isLargeScreen = screenWidth > 600;
-const numColumns = isLargeScreen ? 4 : 2;
-const cardSpacing = 16;
-const cardSize = (screenWidth * 0.9 - cardSpacing * (numColumns + 1)) / numColumns;
 
 const biomas = [
-  { id: 1, name: 'Amazônia', image: require('../assets/boto.png') },
+  { id: 1, name: 'Mata Atlântica', image: require('../assets/mata-atlantica.png') },
   { id: 2, name: 'Cerrado', image: require('../assets/guarana.png') },
   { id: 3, name: 'Caatinga', image: require('../assets/caatinga.jpg') },
-  { id: 4, name: 'Mata Atlântica', image: require('../assets/mata-atlantica.png') },
+  { id: 4, name: 'Amazônia', image: require('../assets/boto.png') },
 ];
 
 const cardBackImage = require('../assets/folha.jpeg');
@@ -26,7 +21,7 @@ function shuffle(array) {
   while (currentIndex !== 0) {
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
-    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    [array[currentIndex], array[currentIndex]] = [array[currentIndex], array[currentIndex]];
   }
   return array;
 }
@@ -45,18 +40,20 @@ export default function GameScreen() {
   const [faseFinalizada, setFaseFinalizada] = useState(false);
 
   useEffect(() => {
-    const biomaAtual = biomas.find((b) => b.id === fase) || biomas[0];
-    const duplicatedCards = [biomaAtual, biomaAtual];
-    const shuffledCards = shuffle(
-      duplicatedCards.map((card, index) => ({ ...card, key: index }))
-    );
-    setCards(shuffledCards);
-    setStartTime(Date.now());
-    setMatched([]);
-    setSelected([]);
-    setElapsedTime(0);
-    setGameOver(false);
-    setFaseFinalizada(false);
+    const biomaAtual = biomas.find((b) => b.id === fase);
+    if (biomaAtual) {
+      const duplicatedCards = Array(6).fill(biomaAtual); // 6 pares = 12 cartas
+      const shuffledCards = shuffle(
+        duplicatedCards.map((card, index) => ({ ...card, key: index }))
+      );
+      setCards(shuffledCards);
+      setStartTime(Date.now());
+      setMatched([]);
+      setSelected([]);
+      setElapsedTime(0);
+      setGameOver(false);
+      setFaseFinalizada(false);
+    }
   }, [fase]);
 
   useEffect(() => {
@@ -70,23 +67,20 @@ export default function GameScreen() {
   }, [startTime, gameOver]);
 
   useEffect(() => {
-    const uniqueCardIds = [...new Set(cards.map(card => card.id))];
-    if (uniqueCardIds.length > 0 && matched.length === uniqueCardIds.length && !faseFinalizada) {
+    if (matched.length === 6 && !faseFinalizada) {
       setFaseFinalizada(true);
       setGameOver(true);
       setTimeout(() => {
-        Alert.alert(
-          'Parabéns!',
-          `Você completou a fase ${fase} em ${elapsedTime} segundos!`);
+        Alert.alert('Parabéns!', `Você completou a fase em ${elapsedTime} segundos!`);
       }, 500);
     }
-  }, [matched, cards, gameOver, elapsedTime, faseFinalizada]);
+  }, [matched, gameOver, elapsedTime, faseFinalizada]);
 
   const handleCardPress = (index) => {
     if (
       selected.length === 2 ||
       selected.includes(index) ||
-      matched.includes(cards[index].id) ||
+      matched.includes(cards[index].key) ||
       gameOver
     ) return;
 
@@ -95,11 +89,10 @@ export default function GameScreen() {
 
     if (newSelected.length === 2) {
       const [first, second] = newSelected;
+      if (cards[first].key === cards[second].key) return;
+
       if (cards[first].id === cards[second].id) {
-        setMatched((prevMatched) => {
-          const newMatchedSet = new Set([...prevMatched, cards[first].id]);
-          return [...newMatchedSet];
-        });
+        setMatched((prevMatched) => [...prevMatched, cards[first].key, cards[second].key]);
         setTimeout(() => setSelected([]), 800);
       } else {
         setTimeout(() => setSelected([]), 800);
@@ -107,24 +100,34 @@ export default function GameScreen() {
     }
   };
 
+  const cardWidth = 120;
+  const cardHeight = 240;
+  const spacing = 10;
+
+  const biomaName = biomas.find((b) => b.id === fase)?.name || 'Fase';
+
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, flexDirection: 'row' }}>
       <NavBar />
       <View style={styles.container}>
-        <Text style={styles.title}>Jogo da Memória - {biomas.find(b => b.id === fase)?.name}</Text>
+        <Text style={styles.title}>Jogo da Memória - {biomaName}</Text>
         <Text style={styles.timer}>Tempo: {elapsedTime}s</Text>
-        <View style={styles.board}>
+        <ScrollView contentContainerStyle={styles.board}>
           {cards.map((card, index) => (
             <Card
-              key={card.key}
+              key={index}
               card={card}
-              isFlipped={selected.includes(index) || matched.includes(card.id)}
+              isFlipped={selected.includes(index) || matched.includes(card.key)}
               onPress={() => handleCardPress(index)}
               backImage={cardBackImage}
-              style={{ width: cardSize, height: cardSize, margin: cardSpacing / 2 }}
+              style={{
+                width: cardWidth,
+                height: cardHeight,
+                margin: spacing / 2,
+              }}
             />
           ))}
-        </View>
+        </ScrollView>
         {faseFinalizada && (
           <TouchableOpacity
             style={styles.button}
@@ -142,28 +145,27 @@ export default function GameScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 10, alignItems: 'center' },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    padding: 10,
+  },
   title: {
-    fontSize: isLargeScreen ? 32 : 24,
+    fontSize: 24,
     fontWeight: 'bold',
     marginVertical: 10,
     color: '#2e7d32',
   },
   timer: {
-    fontSize: isLargeScreen ? 20 : 16,
+    fontSize: 16,
     marginBottom: 10,
   },
   board: {
-    width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    alignContent: 'center',
-    backgroundColor: '#e8f5e9',
+    alignContent: 'flex-start',
     padding: 10,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#388e3c',
   },
   button: {
     marginTop: 20,

@@ -6,65 +6,61 @@ const NavBar = () => {
   const navigation = useNavigation();
 
   return (
-    <View style={styles.footer}>
-      <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Home")}>
-        <Image source={require("../assets/Home.png")} style={styles.footerIcon} />
-        <Text style={styles.footerText}>Início</Text>
+    <View style={styles.sidebar}>
+      <TouchableOpacity style={styles.sidebarItem} onPress={() => navigation.navigate("Home")}>
+        <Image source={require("../assets/Home.png")} style={styles.sidebarIcon} />
+        <Text style={styles.sidebarText}>Início</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("MapaBiomas")}>
-        <Image source={require("../assets/folha.jpeg")} style={styles.footerIcon} />
-        <Text style={styles.footerText}>Jogue</Text>
+      <TouchableOpacity style={styles.sidebarItem} onPress={() => navigation.navigate("MapaBiomas")}>
+        <Image source={require("../assets/folha.jpeg")} style={styles.sidebarIcon} />
+        <Text style={styles.sidebarText}>Jogue</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Notificacoes")}>
-        <Image source={require("../assets/NavNotificação.png")} style={styles.footerIcon} />
-        <Text style={styles.footerText}>Ranking</Text>
+      <TouchableOpacity style={styles.sidebarItem} onPress={() => navigation.navigate("Notificacoes")}>
+        <Image source={require("../assets/NavNotificação.png")} style={styles.sidebarIcon} />
+        <Text style={styles.sidebarText}>Ranking</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate("Menu")}>
-        <Image source={require("../assets/Menu.png")} style={styles.footerIcon} />
-        <Text style={styles.footerText}>Menu</Text>
+      <TouchableOpacity style={styles.sidebarItem} onPress={() => navigation.navigate("Menu")}>
+        <Image source={require("../assets/Menu.png")} style={styles.sidebarIcon} />
+        <Text style={styles.sidebarText}>Menu</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  footer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center", 
-    backgroundColor: "#F45B74", 
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    position: "absolute", 
-    bottom: 15,
-    left: 10,
-    right: 10,
-    elevation: 10, 
+  sidebar: {
+    width: 80,
+    backgroundColor: "#166b21ff",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    paddingVertical: 20,
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    elevation: 10,
     zIndex: 99,
-    shadowColor: "#000", 
-    shadowOffset: { width: 0, height: 3 },
+    shadowColor: "#000",
+    shadowOffset: { width: 2, height: 0 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
   },
-  footerItem: {
-    alignItems: "center", 
+  sidebarItem: {
+    alignItems: "center",
+    marginVertical: 20,
   },
-  footerIcon: {
+  sidebarIcon: {
     width: 30,
     height: 30,
     resizeMode: "contain",
-    marginTop: 4,
-    marginBottom: 4,
-    marginLeft: 4,
-    marginRight: 4,
   },
-  footerText: {
+  sidebarText: {
     fontSize: 10,
     color: "white",
+    marginTop: 4,
   },
 });
 

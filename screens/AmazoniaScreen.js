@@ -22,6 +22,7 @@ export default function AmazoniaScreen() {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+    paddingLeft: 100,
     alignItems: 'center',
   },
   title: {
